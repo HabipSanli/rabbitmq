@@ -1,0 +1,28 @@
+{
+  "name": "rabbitmq",
+  "version": "1.0.0",
+  "description": "Rabbitmq test repository",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc -p . && node out/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HabipSanli/rabbitmq.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HabipSanli/rabbitmq/issues"
+  },
+  "homepage": "https://github.com/HabipSanli/rabbitmq#readme",
+  "dependencies": {
+    "amqplib": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.8.2",
+    "typescript": "^4.7.4"
+  }
+}
