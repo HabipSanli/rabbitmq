@@ -1,36 +1,94 @@
 import express from "express";
-import client, { Connection, Channel, ConsumeMessage } from "amqplib";
-
-//const amqp = require('amqplib/callback_api');
-const cors = require('cors');
+const cors = require("cors");
+import amqp from 'amqplib';
+import { initRabbit, onMsg } from "./rabbit";
 const PORT = 5672;
 
-const connection = await client.connect(`amqp://localhost:${PORT}`);
-const channel = await connection.createChannel()
-await channel.assertQueue("myqueue")
 
-const sendMessages = (channel: Channel) => {
-    for (let i = 0; i < 10; i++) {
-      channel.sendToQueue('myQueue', Buffer.from(`message ${i}`))
-    }
+initRabbit().then(() =>{
+	onMsg();
+})
+
+
+
+/*
+function start() {
+	amqp.connect(`amqp://localhost:${PORT}` + "?heartbeat=60", function(err, conn) {
+	  if (err) {
+		console.error("[AMQP]", err.message);
+		return setTimeout(start, 1000);
+	  }
+	  conn.on("error", function(err) {
+		if (err.message !== "Connection closing") {
+		  console.error("[AMQP] conn error", err.message);
+		}
+	  });
+	  conn.on("close", function() {
+		console.error("[AMQP] reconnecting");
+		return setTimeout(start, 1000);
+	  });
+	  console.log("[AMQP] connected");
+	  acon = conn;
+	  whenConnected();
+	});
 }
 
-const consumer = (channel: Channel) => (msg: ConsumeMessage | null): void => {
-    if (msg) {
-      // Display the received message
-      console.log(msg.content.toString())
-      // Acknowledge the message
-      channel.ack(msg)
-    }
+function whenConnected(){
+	startReceiver();
 }
 
-sendMessages(channel);
+function startReceiver(){
+	acon.createChannel(function(err,ch){
+		if(err){
+			console.log('Channel failed');
+			return;
+		}
+		ch.on('error', function(err){
+			console.error('Channel error');
+		});
+		ch.on('close',function(err){
+			console.error('Channel closed');
+		});
+		ch.assertQueue('main', {durable : true});
+		//ch.prefetch(1);
+		ch.consume('main',function(msg){
+			if(msg !== null)
+				console.log('Received!');
+				let rpc = msg?.properties.replyTo;
+				let rpc_id = msg?.properties.correlationId;
+				ch.sendToQueue(rpc,Buffer.from('Received'),{correlationId : rpc_id})
 
+		})
+	})
+}
+start();
+*/
 
-const app = express();
-app.use(cors({
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": true,
-    "optionsSuccessStatus": 204
-}));
+//////////////////////Denemeler///////////////////
+/*
+const connectToRabbit = () => {
+	amqp.connect(`amqp://localhost:${PORT}`, function (err, conn){
+		if(err){
+			console.log(err);
+			console.log('AmQP Failed! Reconnectiong 1s');
+			setTimeout(connectToRabbit,1000);
+			return;
+		}
+		conn.createChannel((err,ch) =>{
+			if(!err){
+				console.log('Channel created');
+			}
+		});
+		conn.on('error',function(err){
+			if (err.msg !== 'Connection Closing'){
+				console.error('AMQP conn error');
+			}
+		});
+		conn.on('closed',function(err){
+			console.error("[AMQP] reconnecting!");
+			connectToRabbit();
+		})
+	})
+}
+connectToRabbit();
+*/
