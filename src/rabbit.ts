@@ -13,7 +13,7 @@ export async function initRabbit(){
 	return channel;
 }
 
-export async function onMsg(){
+export async function consumeMessage(){
     channel.consume('rpc', (msg)=>{
         if(msg !== null){
             console.log(msg.content);
