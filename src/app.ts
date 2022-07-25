@@ -1,5 +1,5 @@
-import express from "express";
-const cors = require("cors");
+//import express from "express";
+//const cors = require("cors");
 import amqp from 'amqplib';
 import { initRabbit, consumeMessage } from "./rabbit";
 const PORT = 5672;
