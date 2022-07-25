@@ -16,7 +16,7 @@ export async function initRabbit(){
 export async function consumeMessage(){
     channel.consume('rpc', (msg)=>{
         if(msg !== null){
-            console.log(msg.content);
+            console.log(msg.content.toString());
             let reply = msg.properties.replyTo;
             let coId = msg.properties.correlationId;
             channel.sendToQueue(reply,Buffer.from(msg.content),{correlationId : coId});
